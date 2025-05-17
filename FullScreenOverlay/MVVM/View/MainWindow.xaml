@@ -4,19 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FullScreenOverlay"
+        xmlns:uc="clr-namespace:FullScreenOverlay.MVVM.View"
+        xmlns:uc2="clr-namespace:FullScreenOverlay.MVVM.View.Body"
         xmlns:dataC="clr-namespace:FullScreenOverlay.MVVM.ViewModel"
         
         mc:Ignorable="d"
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="NoResize"
-        Background="Black"
-        Opacity="0.7"
         Topmost="True"
         ShowInTaskbar="False"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
-        Icon="/MVVM/View/appIco_white.png"
+        Icon="/Application/Resources/s_appIco_256.ico"
+        Background="Transparent"
         Title="" 
         Height="{Binding ScreenHeight, UpdateSourceTrigger=PropertyChanged}" 
         Width="{Binding ScreenWidth, UpdateSourceTrigger=PropertyChanged}"
@@ -25,8 +26,26 @@
     <Window.DataContext>
         <dataC:VM_MainWindow/>
     </Window.DataContext>
-    
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
         
+        
+        <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="999" Grid.RowSpan="999"
+            Fill="#AA000000" Opacity="0.9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+        <Grid x:Name="Header" Opacity="1" VerticalAlignment="Center">
+            <uc:MainHeader/>
+        </Grid>
+        <Grid x:Name="Body" Grid.Row="1">
+            <uc2:MainBody/>
+        </Grid>
+        <Grid x:Name="Foolter">
+            
+        </Grid>
     </Grid>
 </Window>

@@ -2,8 +2,11 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace FullScreenOverlay;
 
@@ -12,7 +15,8 @@ public partial class App : Application {
     private static bool isWindowActive;
 
     private static bool canBeClosed;
-    static bool ctrlPressed;
+    private static bool funcKey0;
+    private static bool funcKey1;
     static bool shiftPressed;
 
     public static bool CanBeClosed {
@@ -46,7 +50,7 @@ public partial class App : Application {
 
     // LL HOTKEY SUPPRESSING
     private IntPtr WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled) {
-        if (msg == WM_KILLFOCUS && isWindowActive) {
+        if (msg == WM_KILLFOCUS) {
             //TODO: losse focus ony when other application is focused | currently: ineer windows can close overlay too
             DeactivateWindow();
         }
@@ -61,7 +65,7 @@ public partial class App : Application {
         if (msg == WM_WINDOWPOSCHANGING) {
             var wp = Marshal.PtrToStructure<WINDOWPOS>(lParam);
             wp.flags |= SWP_NOMOVE | SWP_NOSIZE;
-            Marshal.StructureToPtr(wp, lParam, false);
+            Marshal.StructureToPtr(wp, lParam, true);
 
             handled = true;
             return IntPtr.Zero;
@@ -84,48 +88,50 @@ public partial class App : Application {
         isWindowActive = false;
         mainWindow.Hide();
     }
-
+    
     private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
-        if (nCode >= 0 && wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) {
-            if (CanBeClosed) {
-                DeactivateWindow();
+        if (nCode < 0) return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
+        if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) {
+            if (CanBeClosed) { 
+                DeactivateWindow(); 
             }
 
             var skb = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
             if (skb.vkCode == VK_ESCAPE && isWindowActive) {
                 CanBeClosed = false;
-                isWindowActive = false;
                 DeactivateWindow();
             }
-
+            
             //Show Overlay
-            if (!ctrlPressed)
-                ctrlPressed = skb.vkCode == VK_LCONTROL;
-            if (!shiftPressed)
-                shiftPressed = skb.vkCode == VK_LSHIFT;
+            if (!funcKey0)
+                funcKey0 = skb.vkCode == VK_LCONTROL;
+
+            if (!funcKey1)
+                funcKey1 = skb.vkCode == VK_LSHIFT;
+
             bool activationKeyPressed = skb.vkCode == VK_Q;
 
-            if (ctrlPressed && shiftPressed && activationKeyPressed) {
+            if (funcKey0 && activationKeyPressed) {
                 if (!isWindowActive) {
-                    isWindowActive = true;
-
-                    mainWindow.Activate();
                     mainWindow.Show();
+                    mainWindow.Activate();
+                    mainWindow.Focus();
 
-                    //CanBeClosed = true;
-                    return 1;
+                    isWindowActive = true;
                 }
+                return 1;
             }
         }
 
-        if (nCode >= 0 && wParam == WM_KEYUP || wParam == WM_SYSKEYUP) {
+        if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP) {
             var skb = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
-            if (skb.vkCode == VK_LCONTROL || skb.vkCode == VK_RCONTROL) {
-                ctrlPressed = false;
+
+            if (skb.vkCode == VK_LCONTROL) {
+                funcKey0 = false;
             }
 
-            if (skb.vkCode == VK_LSHIFT || skb.vkCode == VK_RSHIFT) {
-                ctrlPressed = false;
+            if (skb.vkCode == VK_LSHIFT) {
+                funcKey1 = false;
             }
         }
 
@@ -158,6 +164,7 @@ public partial class App : Application {
 
     static IntPtr hHook;
     private static LowLevelKeyboardProc _proc = KeyboardHookCallback;
+
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     // ***
@@ -165,6 +172,9 @@ public partial class App : Application {
     private const int VK_ESCAPE = 0x1B;
 
     private const int VK_Q = 0x51;
+    private const int VK_Z = 0x5A;
+    private const int VK_LWIN = 0x5B;
+    private const int VK_RWIN = 0x5C;
 
     private const int VK_LSHIFT = 0xA0;
     private const int VK_RSHIFT = 0xA1;

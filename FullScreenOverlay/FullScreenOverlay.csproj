@@ -10,19 +10,47 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="MVVM\View\appIco_white.png" />
+    <None Remove="Application\Resources\appIco_256.ico" />
+    <None Remove="Application\Resources\appIco_256.png" />
+    <None Remove="Application\Resources\appIco_512.ico" />
+    <None Remove="Application\Resources\appIco_512.png" />
+    <None Remove="Application\Resources\s_appIco_256.png" />
+    <None Remove="Application\Resources\s_appIco_512.ico" />
+    <None Remove="Application\Resources\s_appIco_512.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Application\Resources\s_appIco_256.ico" />
+    <Resource Include="Application\Resources\s_appIco_256.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Application\Resources\appIco_256.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\appIco_256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\appIco_512.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\appIco_512.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\s_appIco_256.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\s_appIco_512.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\s_appIco_512.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="MVVM\Model\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="MVVM\View\appIco_white.png" />
   </ItemGroup>
 
 </Project>
