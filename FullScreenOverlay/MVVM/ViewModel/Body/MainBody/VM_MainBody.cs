@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace FullScreenOverlay.MVVM.ViewModel.Body.MainBody;
@@ -15,8 +14,8 @@ public partial class VM_MainBody : ViewModelBase {
 
     private Point dragStartPoint;
     private bool isMouseHeld = false;
-    private double cellSize = 100d;
-    private double drawOffset = 0d;
+    private double cellSize = 80;
+    private double drawOffset;
 
     private ObservableCollection<BgRectangle> rects = new();
     List<BodyContentItem> selectedItems = new();
@@ -25,10 +24,7 @@ public partial class VM_MainBody : ViewModelBase {
         get { return rects; }
         set { rects = value; }
     }
-    // *** DEBUG ***
 
-
-    private Point screenOffset;
     public VM_MainBody() {
         PopulateGrid();
     }
@@ -38,7 +34,7 @@ public partial class VM_MainBody : ViewModelBase {
         double screenWidth = SystemParameters.PrimaryScreenWidth;
         double screenHeight = SystemParameters.PrimaryScreenHeight;
 
-        int cellCountVertical = Convert.ToInt32(Math.Round(screenHeight / cellSize, MidpointRounding.ToZero));
+        int cellCountVertical = Convert.ToInt32(Math.Round(screenHeight / cellSize, MidpointRounding.ToZero)) - 1;
         int cellCountHorizontal = Convert.ToInt32(Math.Round(screenWidth / cellSize, MidpointRounding.ToZero));
 
         cellCount = cellCountHorizontal * cellCountVertical;
@@ -102,6 +98,10 @@ public partial class VM_MainBody : ViewModelBase {
         SelectionBoxH = height;
 
         Rect selectionRectangle = new Rect(posX, posY, width, height);
+        ProcessSellection(selectionCanvas, selectionRectangle);
+    }
+
+    private void ProcessSellection(Canvas selectionCanvas, Rect selectionRectangle) {
         foreach (var item in ItemGridElements) {
             var itemPos = item.DisplayItem.TransformToAncestor(selectionCanvas).Transform(new Point(0, 0));
             Rect itemRect = new Rect(itemPos, new Size(item.DisplayItem.ActualWidth, item.DisplayItem.ActualHeight));
@@ -111,18 +111,22 @@ public partial class VM_MainBody : ViewModelBase {
                 if (bcidc == null) continue;
 
                 if (selectionRectangle.IntersectsWith(itemRect)) {
-                    bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#8D86C940");
+                    bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#8D86C9");
                     item.DisplayItem.Tag = true;
                     if (!selectedItems.Contains(item.DisplayItem))
                         selectedItems.Add(item.DisplayItem);
                 } else {
                     if (!bcidc.IsCollectionSet) {
                         bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#131316");
+                        try {
+                            selectedItems.Remove(item.DisplayItem);
+                        } catch { continue; }
                     }
                 }
             } catch { continue; }
         }
     }
+
     internal void SelectionCanvasMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
         if (!isInEditMode) return;
         isMouseHeld = false;
@@ -150,7 +154,7 @@ public partial class VM_MainBody : ViewModelBase {
         Point bottomRight = new(-1, -1);
 
         //GRID CONFERMED
-        if (!isCollectionOverlap) {
+        if (!isCollectionOverlap && selectedItems.Count > 0) {
             foreach (var i in selectedItems) {
                 var bcidc = i.DataContext as VM_BodyContentItem;
                 bcidc.IsCollectionSet = true;
