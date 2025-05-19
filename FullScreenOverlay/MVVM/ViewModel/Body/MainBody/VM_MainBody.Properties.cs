@@ -14,11 +14,26 @@ namespace FullScreenOverlay.MVVM.ViewModel.Body.MainBody {
             }
         }
 
-        private bool isInEditMode = true;
+        private Visibility selectionGridVisibility = Visibility.Hidden;
+        public Visibility SelectionGridVisibility {
+            get { return selectionGridVisibility; }
+            set {
+                selectionGridVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool isInEditMode = false;
         public bool IsInEditMode {
             get { return isInEditMode; }
             set {
                 isInEditMode = value;
+
+                if (value)
+                    SelectionGridVisibility = Visibility.Visible;
+                else
+                    SelectionGridVisibility = Visibility.Hidden;
+
                 OnPropertyChanged();
             }
         }

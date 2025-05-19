@@ -27,6 +27,11 @@ public partial class VM_MainBody : ViewModelBase {
 
     public VM_MainBody() {
         PopulateGrid();
+        VM_MainFooter.EditModeChanged += OnEditModeChanged;
+    }
+
+    private void OnEditModeChanged(object? sender, EventArgs e) {
+        IsInEditMode = !IsInEditMode;
     }
 
     private void PopulateGrid() {
@@ -63,7 +68,8 @@ public partial class VM_MainBody : ViewModelBase {
     }
 
     internal void SelectionCanvasMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-        if (!isInEditMode) return;
+        if (!IsInEditMode) return;
+
         Canvas selectionCanvas = (Canvas)sender;
 
         var itemPos = selectionCanvas.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
@@ -81,7 +87,8 @@ public partial class VM_MainBody : ViewModelBase {
     }
 
     internal void SelectionCanvasMouseMove(object sender, MouseEventArgs e) {
-        if (!isInEditMode) return;
+        if (!IsInEditMode) return;
+
         if (!isMouseHeld) return;
 
         Canvas selectionCanvas = (Canvas)sender;
@@ -128,7 +135,7 @@ public partial class VM_MainBody : ViewModelBase {
     }
 
     internal void SelectionCanvasMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-        if (!isInEditMode) return;
+        if (!IsInEditMode) return;
         isMouseHeld = false;
 
         Canvas selectionCanvas = (Canvas)sender;
