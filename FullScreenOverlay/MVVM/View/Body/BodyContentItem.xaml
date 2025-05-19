@@ -12,7 +12,6 @@
         <dataC:VM_BodyContentItem/>
     </UserControl.DataContext>
     
-    <Border BorderBrush="{Binding BorderColor, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" Margin="4">
-        <Grid> </Grid>
+    <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Margin="16" CornerRadius="5">
     </Border>
 </UserControl>

@@ -5,7 +5,7 @@ namespace FullScreenOverlay.MVVM.ViewModel.Body;
 public class VM_BodyContentItem : ViewModelBase {
 
     public VM_BodyContentItem() {
-        BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#a60000");
+        BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#131316");
     }
 
     private SolidColorBrush borderColor;
@@ -22,5 +22,6 @@ public class VM_BodyContentItem : ViewModelBase {
 		get { return isCollectionSet; }
 		set { isCollectionSet = value; }
 	}
+
 
 }

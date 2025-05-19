@@ -1,6 +1,5 @@
 ﻿using FullScreenOverlay.MVVM.Model;
 using FullScreenOverlay.MVVM.Supplimentary;
-using FullScreenOverlay.MVVM.View;
 using FullScreenOverlay.MVVM.View.Body;
 using System;
 using System.Collections.Generic;
@@ -8,50 +7,71 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace FullScreenOverlay.MVVM.ViewModel.Body.MainBody;
 public partial class VM_MainBody : ViewModelBase {
 
     private Point dragStartPoint;
-    bool isMouseHeld = false;
-    double cellH = 100;
-    double cellW = 100;
-    List<BodyContentItem> selectedItems = new();
-    private ObservableCollection<BgRectangle> rects = new();
+    private bool isMouseHeld = false;
+    private double cellSize = 100d;
+    private double drawOffset = 0d;
 
-    private int drawOffset = 52; // FOR SOME REASON ????
+    private ObservableCollection<BgRectangle> rects = new();
+    List<BodyContentItem> selectedItems = new();
 
     public ObservableCollection<BgRectangle> Rects {
         get { return rects; }
         set { rects = value; }
     }
     // *** DEBUG ***
-    public VM_MainBody() {
-        PopulateGrid(190);
 
-        ItemGridH = cellH * ItemGridRows;
-        ItemGridW = cellW * ItemGridColumns;
+
+    private Point screenOffset;
+    public VM_MainBody() {
+        PopulateGrid();
     }
 
-    private void PopulateGrid(int count) {
+    private void PopulateGrid() {
+        int cellCount = -1;
+        double screenWidth = SystemParameters.PrimaryScreenWidth;
+        double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+        int cellCountVertical = Convert.ToInt32(Math.Round(screenHeight / cellSize, MidpointRounding.ToZero));
+        int cellCountHorizontal = Convert.ToInt32(Math.Round(screenWidth / cellSize, MidpointRounding.ToZero));
+
+        cellCount = cellCountHorizontal * cellCountVertical;
+
         ItemGridElements.Clear();
 
-        for (int i = 0; i < count; i++) {
+        double positionX = 0d;
+        double positionY = 0d;
+
+        for (int i = 0; i < cellCount; i++) {
+            if (i % cellCountVertical == 0 && i != 0) {
+                positionY++;
+                positionX = 0;
+            } else if (i != 0) {
+                positionX++;
+            }
+
             BodyContentItem bci = new();
-            bci.Height = cellH;
-            bci.Width = cellW;
+            SellectionCell cell = new(bci, cellSize) {
+                Top = positionX * cellSize,
+                Left = positionY * cellSize,
+            };
 
-            Point topLeft = new Point(0,0);
-
-            ItemGridElements.Add(bci);
+            ItemGridElements.Add(cell);
         }
     }
 
     internal void SelectionCanvasMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
         if (!isInEditMode) return;
-
         Canvas selectionCanvas = (Canvas)sender;
+
+        var itemPos = selectionCanvas.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
+        drawOffset = itemPos.Y;
 
         dragStartPoint = e.GetPosition(selectionCanvas);
         SelectionBoxLeft = dragStartPoint.X;
@@ -82,25 +102,25 @@ public partial class VM_MainBody : ViewModelBase {
         SelectionBoxH = height;
 
         Rect selectionRectangle = new Rect(posX, posY, width, height);
-        foreach (BodyContentItem item in ItemGridElements) {
-            var itemPos = item.TransformToAncestor(selectionCanvas).Transform(new Point(0, 0));
-            Rect itemRect = new Rect(itemPos, new Size(item.ActualWidth, item.ActualHeight));
+        foreach (var item in ItemGridElements) {
+            var itemPos = item.DisplayItem.TransformToAncestor(selectionCanvas).Transform(new Point(0, 0));
+            Rect itemRect = new Rect(itemPos, new Size(item.DisplayItem.ActualWidth, item.DisplayItem.ActualHeight));
 
             try {
-                VM_BodyContentItem? bcidc = item.DataContext as VM_BodyContentItem;
+                VM_BodyContentItem? bcidc = item.DisplayItem.DataContext as VM_BodyContentItem;
                 if (bcidc == null) continue;
 
                 if (selectionRectangle.IntersectsWith(itemRect)) {
-                    bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#00a624");
-                    item.Tag = true;
-                    if (!selectedItems.Contains(item))
-                        selectedItems.Add(item);
+                    bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#8D86C940");
+                    item.DisplayItem.Tag = true;
+                    if (!selectedItems.Contains(item.DisplayItem))
+                        selectedItems.Add(item.DisplayItem);
                 } else {
                     if (!bcidc.IsCollectionSet) {
-                        bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#a60000");
+                        bcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#131316");
                     }
                 }
-            }catch { continue; }
+            } catch { continue; }
         }
     }
     internal void SelectionCanvasMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -116,18 +136,18 @@ public partial class VM_MainBody : ViewModelBase {
             if (bcidc.IsCollectionSet) {
                 isCollectionOverlap = true;
 
-                foreach (var x in selectedItems) {          
+                foreach (var x in selectedItems) {
                     var xbcidc = x.DataContext as VM_BodyContentItem;
 
-                    if(!xbcidc.IsCollectionSet)
+                    if (!xbcidc.IsCollectionSet)
                         xbcidc.BorderColor = (SolidColorBrush)new BrushConverter().ConvertFromString("#a60000");
                 }
                 break;
             }
         }
 
-        Point topLeft = new(int.MaxValue,int.MaxValue);
-        Point bottomRight = new(-1,-1);
+        Point topLeft = new(int.MaxValue, int.MaxValue);
+        Point bottomRight = new(-1, -1);
 
         //GRID CONFERMED
         if (!isCollectionOverlap) {
@@ -146,10 +166,10 @@ public partial class VM_MainBody : ViewModelBase {
             topLeft.X -= 3;
             topLeft.Y -= drawOffset;
 
-            bottomRight.X += cellH - 5;
-            bottomRight.Y += cellW - drawOffset - 2;
+            bottomRight.X += cellSize - 5;
+            bottomRight.Y += cellSize - drawOffset - 2;
 
-            var rect = new Rect(topLeft,bottomRight);
+            var rect = new Rect(topLeft, bottomRight);
             BgRectangle rectVM = new(rect);
 
             Rects.Add(rectVM);
