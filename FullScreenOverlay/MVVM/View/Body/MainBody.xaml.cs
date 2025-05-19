@@ -1,4 +1,4 @@
-﻿using FullScreenOverlay.MVVM.ViewModel.Body;
+﻿using FullScreenOverlay.MVVM.ViewModel.Body.MainBody;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -7,6 +7,7 @@ namespace FullScreenOverlay.MVVM.View.Body {
         public MainBody() {
             InitializeComponent();
             SetupMouseEvents();
+
         }
 
 

@@ -4,40 +4,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FullScreenOverlay.MVVM.View.Body"
-             xmlns:dataC="clr-namespace:FullScreenOverlay.MVVM.ViewModel.Body"
+             xmlns:dataC="clr-namespace:FullScreenOverlay.MVVM.ViewModel.Body.MainBody"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    
+             d:DesignHeight="1014" d:DesignWidth="1918">
+
     <UserControl.DataContext>
         <dataC:VM_MainBody/>
     </UserControl.DataContext>
-    
-    <Grid
-        Margin="4">
+
+    <Grid Margin="4">
         <Canvas x:Name="SelectionCanvas" Background="Black" Opacity="0.5">
-            <ItemsControl ItemsSource="{Binding ItemGridElements}">
+            <ItemsControl ItemsSource="{Binding Rects}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                        <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Stroke="Blue" StrokeThickness="1" Fill="Black"
+                            Width="{Binding Width}"
+                            Height="{Binding Height}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding ItemGridElements}" HorizontalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid
                             Margin="4"
-                            Rows="{Binding ItemGridRows}"
-                            Columns="{Binding ItemGridColumns}"
+                            Rows="{Binding ItemGridRows, UpdateSourceTrigger=PropertyChanged}"
+                            Columns="{Binding ItemGridColumns, UpdateSourceTrigger=PropertyChanged}"
+                            Height="{Binding ItemGridH, UpdateSourceTrigger=PropertyChanged}"
                             />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
-            
+
             <Rectangle x:Name="SelectionBox"
-                    Stroke="#22b00c"
-                    StrokeThickness="1"
-                    Fill="#24242430"
+                Stroke="#22b00c"
+                StrokeThickness="1"
+                Fill="#24242430"
                        
-                    Height="{Binding SelectionBoxH, UpdateSourceTrigger=PropertyChanged}"
-                    Width="{Binding SelectionBoxW, UpdateSourceTrigger=PropertyChanged}"
+                Height="{Binding SelectionBoxH, UpdateSourceTrigger=PropertyChanged}"
+                Width="{Binding SelectionBoxW, UpdateSourceTrigger=PropertyChanged}"
                     
-                    Canvas.Left="{Binding SelectionBoxLeft, UpdateSourceTrigger=PropertyChanged}"
-                    Canvas.Top="{Binding SelectionBoxTop, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding SelectionBoxVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+                Canvas.Left="{Binding SelectionBoxLeft, UpdateSourceTrigger=PropertyChanged}"
+                Canvas.Top="{Binding SelectionBoxTop, UpdateSourceTrigger=PropertyChanged}"
+                Visibility="{Binding SelectionBoxVisibility, UpdateSourceTrigger=PropertyChanged}"
+            />
         </Canvas>
     </Grid>
 </UserControl>
