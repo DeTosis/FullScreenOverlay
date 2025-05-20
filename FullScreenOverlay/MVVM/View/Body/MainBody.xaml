@@ -40,7 +40,6 @@
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas
-                            Visibility="{Binding SelectionGridVisibility, UpdateSourceTrigger=PropertyChanged}"
                             IsHitTestVisible="{Binding IsInEditMode, UpdateSourceTrigger=PropertyChanged}"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>

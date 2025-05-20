@@ -2,11 +2,8 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace FullScreenOverlay;
 
@@ -50,9 +47,10 @@ public partial class App : Application {
 
     // LL HOTKEY SUPPRESSING
     private IntPtr WndProc(nint hwnd, int msg, nint wParam, nint lParam, ref bool handled) {
-        if (msg == WM_KILLFOCUS) {
+        if (msg == WM_KILLFOCUS && CanBeClosed) {
             //TODO: losse focus ony when other application is focused | currently: ineer windows can close overlay too
             DeactivateWindow();
+            CanBeClosed = false;
         }
 
         if (msg == WM_SYSKEYDOWN) {
@@ -88,12 +86,12 @@ public partial class App : Application {
         isWindowActive = false;
         mainWindow.Hide();
     }
-    
+
     private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
         if (nCode < 0) return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
         if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) {
-            if (CanBeClosed) { 
-                DeactivateWindow(); 
+            if (CanBeClosed) {
+                DeactivateWindow();
             }
 
             var skb = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
@@ -101,7 +99,7 @@ public partial class App : Application {
                 CanBeClosed = false;
                 DeactivateWindow();
             }
-            
+
             //Show Overlay
             if (!funcKey0)
                 funcKey0 = skb.vkCode == VK_LCONTROL;
@@ -117,6 +115,7 @@ public partial class App : Application {
                     mainWindow.Activate();
                     mainWindow.Focus();
 
+                    CanBeClosed = true;
                     isWindowActive = true;
                 }
                 return 1;

@@ -1,28 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using FullScreenOverlay.MVVM.ViewModel.Body;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace FullScreenOverlay.MVVM.View.Body
-{
-    /// <summary>
-    /// Interaction logic for BodyContentItem.xaml
-    /// </summary>
-    public partial class BodyContentItem : UserControl
-    {
-        public BodyContentItem()
-        {
+namespace FullScreenOverlay.MVVM.View.Body {
+    public partial class BodyContentItem : UserControl {
+        private VM_BodyContentItem? dataContext = null;
+        bool isMouseHeld = false;
+        public BodyContentItem() {
             InitializeComponent();
+            dataContext = CellBorder.DataContext as VM_BodyContentItem;
+        }
+
+        private void CellBorder_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+            isMouseHeld = true;
+        }
+
+        private void CellBorder_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+            if (isMouseHeld && dataContext != null) {
+                dataContext.AddDataProcess();
+            }
         }
     }
 }

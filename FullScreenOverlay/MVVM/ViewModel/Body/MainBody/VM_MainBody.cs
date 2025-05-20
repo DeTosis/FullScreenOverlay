@@ -30,8 +30,8 @@ public partial class VM_MainBody : ViewModelBase {
         VM_MainFooter.EditModeChanged += OnEditModeChanged;
     }
 
-    private void OnEditModeChanged(object? sender, EventArgs e) {
-        IsInEditMode = !IsInEditMode;
+    private void OnEditModeChanged(object? sender, bool e) {
+        IsInEditMode = e;
     }
 
     private void PopulateGrid() {

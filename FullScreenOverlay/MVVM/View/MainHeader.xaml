@@ -24,7 +24,7 @@
                 <SolidColorBrush Color="#141414"/>
             </Rectangle.Fill>
         </Rectangle>
-        
+
         <Image Grid.Column="0"
             Source="/Application/Resources/s_appIco_512.ico" 
             Width="20" 
@@ -36,7 +36,6 @@
         Content="{Binding OverlayName, UpdateSourceTrigger=PropertyChanged}"
             Foreground="White"
             FontSize="14"
-            FontFamily="Tahoma"
             HorizontalContentAlignment="Left"
             VerticalContentAlignment="Center"
         />
@@ -44,7 +43,6 @@
         Content="{Binding HTime, UpdateSourceTrigger=PropertyChanged}" 
             Foreground="White"
             FontSize="14"
-            FontFamily="Tahoma"
             HorizontalContentAlignment="Right"
             VerticalContentAlignment="Center"
             Margin="5"

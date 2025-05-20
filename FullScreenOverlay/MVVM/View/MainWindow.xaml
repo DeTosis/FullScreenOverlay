@@ -38,13 +38,13 @@
         <Rectangle Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="999" Grid.RowSpan="999"
             Fill="#131316" Opacity="0.1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-        <Grid x:Name="Header" VerticalAlignment="Center" Margin="4,8,8,4">
+        <Grid x:Name="Header" VerticalAlignment="Center" Margin="8,4,8,4">
             <uc:MainHeader/>
         </Grid>
         <Grid x:Name="Body" Grid.Row="1">
             <uc2:MainBody/>
         </Grid>
-        <Grid x:Name="Foolter" Grid.Row="99" Margin="4,8,8,10">
+        <Grid x:Name="Foolter" Grid.Row="99" Margin="8,4,4,8">
             <uc:MainFooter/>
         </Grid>
     </Grid>

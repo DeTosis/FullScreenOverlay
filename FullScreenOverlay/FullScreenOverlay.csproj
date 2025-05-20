@@ -10,16 +10,32 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Application\Fonts\PTMono-Regular.ttf" />
     <None Remove="Application\Resources\appIco_256.ico" />
     <None Remove="Application\Resources\appIco_256.png" />
     <None Remove="Application\Resources\appIco_512.ico" />
     <None Remove="Application\Resources\appIco_512.png" />
+    <None Remove="Application\Resources\settingsBtn.png" />
+    <None Remove="Application\Resources\settings_shadow_Btn.png" />
     <None Remove="Application\Resources\s_appIco_256.png" />
     <None Remove="Application\Resources\s_appIco_512.ico" />
     <None Remove="Application\Resources\s_appIco_512.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Application\Fonts\PTMono-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\settingsBtn.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Application\Resources\settings_shadow_Btn.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Application\Resources\s_appIco_256.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -47,6 +63,27 @@
     <Resource Include="Application\Resources\s_appIco_512.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Application\Resources\undefIcon.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
