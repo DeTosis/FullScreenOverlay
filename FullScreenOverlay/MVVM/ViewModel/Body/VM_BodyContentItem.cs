@@ -1,7 +1,9 @@
 ﻿using FullScreenOverlay.MVVM.Model;
 using FullScreenOverlay.MVVM.Supplimentary;
+using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -23,8 +25,20 @@ public partial class VM_BodyContentItem : ViewModelBase {
                 BorderColor = HexToSolidColorBrushConverter.Convert("#131316");
             }
         } else {
+            if (IsCollectionSet) {
+                CellSeparationV = Visibility.Visible;
+            }
             BackGround = Brushes.Transparent;
             BorderColor = Brushes.Transparent;
+        }
+    }
+
+    public void TryStartApplication() {
+        if (IsInEditMode) return;
+        if (!IsCollectionSet || string.IsNullOrEmpty(FileSource)) return;
+
+        if (!ProgramRunner.TryRunProgram(FileSource, out var e)) {
+            MessageBox.Show(e);
         }
     }
 

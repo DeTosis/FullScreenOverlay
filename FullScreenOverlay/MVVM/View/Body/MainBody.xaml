@@ -39,8 +39,7 @@
             <ItemsControl ItemsSource="{Binding ItemGridElements}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas
-                            IsHitTestVisible="{Binding IsInEditMode, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Canvas/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>

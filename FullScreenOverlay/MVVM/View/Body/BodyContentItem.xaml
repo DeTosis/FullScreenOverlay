@@ -13,21 +13,29 @@
     </UserControl.DataContext>
 
     <Grid>
-        <Image 
+        <Grid x:Name="ItemGrid">
+            <Border BorderBrush="#1B1A1D" BorderThickness="1" CornerRadius="10" Margin="4" 
+                    Visibility="{Binding CellSeparationV, UpdateSourceTrigger=PropertyChanged}">
+                
+            </Border>
+            <Image 
+            MouseLeftButtonDown="ItemGrid_MouseDown"
+            MouseLeftButtonUp="ItemGrid_MouseUp"
             Source="{Binding FileIcon, UpdateSourceTrigger=PropertyChanged}" 
             RenderOptions.BitmapScalingMode="Linear"
             Margin="20"/>
 
-        <Label 
+            <Label 
             Content="{Binding DisplayFileName, UpdateSourceTrigger=PropertyChanged}"
             HorizontalAlignment="Center"
             HorizontalContentAlignment="Center"
             VerticalAlignment="Bottom"
             VerticalContentAlignment="Center"
             Margin="6,3,6,1"
-            Foreground="White"
+            Foreground="#CAC4CE"
             FontSize="12"
             />
+        </Grid>
 
         <Border 
             IsHitTestVisible="{Binding IsInEditMode}"

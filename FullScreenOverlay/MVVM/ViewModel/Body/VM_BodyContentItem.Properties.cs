@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Windows;
@@ -32,7 +33,14 @@ namespace FullScreenOverlay.MVVM.ViewModel.Body {
             }
         }
 
-
+        private Visibility cellSeparationV = Visibility.Hidden;
+        public Visibility CellSeparationV {
+            get { return cellSeparationV; }
+            set { 
+                cellSeparationV = value;
+                OnPropertyChanged();
+            }
+        }
 
 
         private bool isCollectionSet = false;
@@ -96,6 +104,5 @@ namespace FullScreenOverlay.MVVM.ViewModel.Body {
                 OnPropertyChanged();
             }
         }
-
     }
 }

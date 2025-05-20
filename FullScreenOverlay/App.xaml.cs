@@ -90,9 +90,9 @@ public partial class App : Application {
     private static IntPtr KeyboardHookCallback(int nCode, IntPtr wParam, IntPtr lParam) {
         if (nCode < 0) return CallNextHookEx(IntPtr.Zero, nCode, wParam, lParam);
         if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN) {
-            if (CanBeClosed) {
-                DeactivateWindow();
-            }
+            //if (CanBeClosed) {
+            //    DeactivateWindow();
+            //}
 
             var skb = Marshal.PtrToStructure<KBDLLHOOKSTRUCT>(lParam);
             if (skb.vkCode == VK_ESCAPE && isWindowActive) {
